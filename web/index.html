@@ -6,14 +6,27 @@
     <title>Search Airline</title>
     <link href="index.css" rel="stylesheet"/>
     <script defer src="index.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {},
+                },
+            },
+        };
+    </script>
 </head>
 <body>
-<p>
-    <label>
-        Search flights by airline
-        <input onkeyup="searchAirline(this.value.trim())"/>
-    </label>
-</p>
-<p id="results"></p>
+<div class="prose">
+    <h1 class="text-3xl font-bold">Search Airline</h1>
+    <p>
+        <label>
+            Search flights by airline
+            <input onkeyup="searchAirline(this.value.trim())"/>
+        </label>
+    </p>
+    <p id="results"></p>
+</div>
 </body>
 </html>
