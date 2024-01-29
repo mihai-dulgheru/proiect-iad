@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Player Profile</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FEBE98",
+              secondary: "#A8DADC",
+              accent: "#1D3557",
+              light: "#F1FAEE",
+              dark: "#505A5B",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-light">
+    <main>
+      <section>
+        <div class="container mx-auto p-4">
+          <h1 class="text-4xl font-bold mb-6 text-dark">Player Profile</h1>
+          <div
+            id="playerProfile"
+            class="flex flex-col md:flex-row bg-white p-4 rounded shadow-lg"
+          >
+            <!-- Player details will be loaded here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      async function fetchPlayerData(playerId) {
+        try {
+          const response = await fetch(`/api/players/${playerId}`);
+          const player = await response.json();
+          displayPlayer(player);
+        } catch (error) {
+          console.error("Error fetching player data:", error);
+          document.getElementById("playerProfile").innerHTML =
+            "Error loading player data.";
+        }
+        const player = {
+          _id: "6315e20056349e0011fe156e",
+          club: {
+            _id: "628f9d1bc7bf051be83d471a",
+            name: "CSU ASE BUCURESTI",
+            county: {
+              code: "B",
+              name: "București",
+            },
+          },
+          status: "activ",
+          visas: ["2022", "2023"],
+          firstname: "RICHARD",
+          lastname: "RAPPORT",
+          card: "4004596",
+          year: 1996,
+          gender: "M",
+          fide: "738590",
+          title: "GM",
+          civ: 2745,
+          disability: false,
+          cnp: "7960325400054",
+          createdAt: "2022-09-05T11:48:16.608Z",
+          __v: 0,
+          avatar:
+            "https://chesscoders.fra1.digitaloceanspaces.com/frsah-portal/4004596-richard-rapport-20221110080156.jpeg",
+          updatedAt: "2023-06-19T21:55:40.990Z",
+        };
+        displayPlayer(player);
+      }
+
+      function displayPlayer(player) {
+        const playerProfileDiv = document.getElementById("playerProfile");
+        playerProfileDiv.innerHTML = `
+          <img
+            src="${player.avatar}"
+            alt="${player.firstname} ${player.lastname}"
+            class="w-48 h-48 rounded-full mx-auto md:mx-0 md:mr-8"
+          />
+          <div class="text-lg mt-4 md:mt-0">
+            <p class="text-accent font-bold text-2xl">
+              ${player.firstname} ${player.lastname}
+            </p>
+            <p class="text-dark">
+              <strong>Club:</strong> ${player.club.name}
+            </p>
+            <p class="text-dark">
+              <strong>Status:</strong> ${player.status}
+            </p>
+            <p class="text-dark">
+              <strong>Title:</strong> ${player.title}
+            </p>
+            <p class="text-dark">
+              <strong>FIDE ID:</strong> ${player.fide}
+            </p>
+            <p class="text-dark">
+              <strong>Year:</strong> ${player.year}
+            </p>
+            <p class="text-dark">
+              <strong>Gender:</strong> ${player.gender}
+            </p>
+          </div>
+        `;
+      }
+
+      const queryParams = new URLSearchParams(window.location.search);
+      const playerId = queryParams.get("playerId");
+      if (playerId) {
+        fetchPlayerData(playerId);
+      } else {
+        document.getElementById("playerProfile").innerHTML =
+          "No player ID provided.";
+      }
+    </script>
+  </body>
+</html>

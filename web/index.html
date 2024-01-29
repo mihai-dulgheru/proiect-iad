@@ -1,32 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Search Airline</title>
-    <link href="index.css" rel="stylesheet"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Chess Players Directory</title>
     <script defer src="index.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {},
-                },
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FEBE98",
+              secondary: "#A8DADC",
+              accent: "#1D3557",
+              light: "#F1FAEE",
+              dark: "#505A5B",
             },
-        };
+          },
+        },
+      };
     </script>
-</head>
-<body>
-<div class="prose">
-    <h1 class="text-3xl font-bold">Search Airline</h1>
-    <p>
-        <label>
-            Search flights by airline
-            <input onkeyup="searchAirline(this.value.trim())"/>
-        </label>
-    </p>
-    <p id="results"></p>
-</div>
-</body>
+  </head>
+  <body class="bg-light">
+    <main class="max-w-5xl mx-auto p-4">
+      <div class="container mx-auto flex flex-col gap-6">
+        <h1 class="text-4xl font-bold text-dark mt-6">
+          Chess Players Directory
+        </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <input
+            type="text"
+            id="search"
+            placeholder="Search players..."
+            class="p-2 border rounded bg-white text-dark"
+            onkeyup="searchPlayers()"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+          <select
+            id="gender"
+            class="p-2 border rounded bg-white text-dark"
+            onchange="filterPlayers()"
+          >
+            <option value="">Select Gender</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="O">Other</option>
+          </select>
+          <!-- Aggregation example: Count by gender -->
+          <button
+            id="aggregate"
+            class="p-2 rounded text-white bg-accent"
+            onclick="aggregatePlayers()"
+          >
+            Count Players by Gender
+          </button>
+        </div>
+        <div class="w-full flex items-center justify-end">
+          <button
+            id="download-results"
+            class="p-2 rounded text-white bg-primary cursor-not-allowed"
+            onclick="downloadResults()"
+            disabled
+          >
+            Download Results
+          </button>
+        </div>
+        <div id="results" class="text-dark">
+          <!-- Results will be displayed here -->
+        </div>
+      </div>
+    </main>
+  </body>
 </html>
