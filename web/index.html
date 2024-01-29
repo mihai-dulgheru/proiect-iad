@@ -39,39 +39,6 @@
             autocorrect="off"
             spellcheck="false"
           />
-          <!-- Filter by club name -->
-          <input
-            type="text"
-            id="club_name"
-            placeholder="Filter by club name..."
-            class="p-2 border rounded bg-white text-dark"
-            onkeyup="filterPlayers()"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-          />
-          <!-- Filter by title -->
-          <select
-            id="title"
-            class="p-2 border rounded bg-white text-dark"
-            onchange="filterPlayers()"
-          >
-            <option value="">Select Title</option>
-            <option value="III">III</option>
-            <option value="II">II</option>
-            <option value="I">I</option>
-            <option value="NM">NM</option>
-            <option value="CM">CM</option>
-            <option value="WCM">WCM</option>
-            <option value="FM">FM</option>
-            <option value="WFM">WFM</option>
-            <option value="IM">IM</option>
-            <option value="WIM">WIM</option>
-            <option value="GM">GM</option>
-            <option value="WGM">WGM</option>
-          </select>
-
-          <!-- Filter by gender -->
           <select
             id="gender"
             class="p-2 border rounded bg-white text-dark"
@@ -81,17 +48,6 @@
             <option value="M">Male</option>
             <option value="F">Female</option>
             <option value="O">Other</option>
-          </select>
-          <!-- Filter by status -->
-          <select
-            id="status"
-            class="p-2 border rounded bg-white text-dark"
-            onchange="filterPlayers()"
-          >
-            <option value="">Select Status</option>
-            <option value="activ">Active</option>
-            <option value="radiat">Inactive</option>
-            <option value="suspendat">Suspended</option>
           </select>
           <!-- Aggregation example: Count by gender -->
           <button
