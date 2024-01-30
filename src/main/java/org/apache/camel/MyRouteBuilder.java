@@ -6,6 +6,7 @@ import org.apache.camel.model.dataformat.JsonLibrary;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A Camel Java DSL Router
@@ -28,6 +29,70 @@ public class MyRouteBuilder extends RouteBuilder {
                 .port(PORT)
                 .component("jetty")
                 .contextPath("/api");
+        rest("/players")
+                .produces("application/json")
+                .get("/")
+                .to("direct:searchPlayer");
+        from("direct:searchPlayer")
+                .choice()
+                .when(simple("${header[\"X-Filter-Type\"]} == \"search\""))
+                .to("direct:searchPlayerByLastname")
+                .when(simple("${header[\"X-Filter-Type\"]} == \"gender\""))
+                .to("direct:searchPlayerByGender");
+        from("direct:searchPlayerByLastname")
+                .removeHeaders("CamelHttp*")
+                .setHeader("Accept")
+                .constant("application/json")
+                .setHeader("Accept-Encoding")
+                .constant("deflate")
+                .setBody(constant(""))
+                .setHeader(Exchange.HTTP_QUERY)
+                .simple("per_page=900")
+                .to("https://portal.frsah.ro/api/public/players")
+                .convertBodyTo(String.class)
+                .unmarshal()
+                .json(JsonLibrary.Jackson)
+                .bean(Player.class, "extractPlayers")
+                .process(new Processor() {
+                    public void process(Exchange exchange) throws Exception {
+                        String filterValue = exchange.getIn().getHeader("X-Filter-Value", String.class).toLowerCase();
+                        List<Player> players = exchange.getIn().getBody(List.class);
+                        List<Player> filteredPlayers = players.stream()
+                                .filter(player -> player.getFirstname().toLowerCase().contains(filterValue))
+                                .collect(Collectors.toList());
+                        exchange.getIn().setBody(filteredPlayers);
+                    }
+                })
+                .marshal()
+                .json(JsonLibrary.Jackson);
+
+        from("direct:searchPlayerByGender")
+                .removeHeaders("CamelHttp*")
+                .setHeader("Accept")
+                .constant("application/json")
+                .setHeader("Accept-Encoding")
+                .constant("deflate")
+                .setBody(constant(""))
+                .setHeader(Exchange.HTTP_QUERY)
+                .simple("per_page=900")
+                .to("https://portal.frsah.ro/api/public/players")
+                .convertBodyTo(String.class)
+                .unmarshal()
+                .json(JsonLibrary.Jackson)
+                .bean(Player.class, "extractPlayers")
+                .process(new Processor() {
+                    public void process(Exchange exchange) throws Exception {
+                        String filterValue = exchange.getIn().getHeader("X-Filter-Value", String.class);
+                        List<Player> players = exchange.getIn().getBody(List.class);
+                        List<Player> filteredPlayers = players.stream()
+                                .filter(player -> player.getGender().equalsIgnoreCase(filterValue))
+                                .collect(Collectors.toList());
+                        exchange.getIn().setBody(filteredPlayers);
+                    }
+                })
+                .marshal()
+                .json(JsonLibrary.Jackson);
+
         rest("/airlines")
                 .produces("application/json")
                 .get("/{airline}")
