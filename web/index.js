@@ -1,100 +1,72 @@
-async function searchPlayers() {
-  const searchValue = document.getElementById("search").value;
-  document.getElementById("gender").value = "";
-  if (searchValue.length > 2) {
-    document.getElementById("results").innerHTML = "Searching for players...";
-    const apiEndpoint = `/api/players/${searchValue}`;
+const apiEndpoint = "/api/players";
+const results = document.getElementById("results");
 
-    try {
-      const response = await fetch(apiEndpoint, {
-        method: "GET",
-        headers: {
-          "X-Filter": "search",
-        },
-      });
-      const players = await response.json();
-      if (players && players.length > 0) {
-        displayPlayers(players);
-      } else {
-        document.getElementById("results").innerHTML = "No players found.";
-      }
-    } catch (error) {
-      console.error("Error fetching players:", error);
-      document.getElementById("results").innerHTML = "Error fetching players.";
-    }
-  } else {
-    document.getElementById("results").innerHTML = "";
+async function fetchAndDisplayPlayers(filterType, filterValue) {
+  results.innerHTML = "Searching for players...";
+
+  try {
+    const response = await fetch(apiEndpoint, {
+      method: "GET",
+      headers: {
+        "X-Filter-Type": filterType,
+        "X-Filter-Value": filterValue,
+      },
+    });
+    const players = await response.json();
+
+    displayPlayers(players);
+  } catch (error) {
+    console.error("Error fetching players:", error);
+    results.innerHTML = "Error fetching players.";
   }
 }
 
-async function filterPlayers() {
+function searchPlayers() {
+  const searchValue = document.getElementById("search").value;
+  document.getElementById("gender").value = "";
+  if (searchValue.length > 2) {
+    fetchAndDisplayPlayers("search", searchValue);
+  } else {
+    results.innerHTML = "";
+  }
+}
+
+function filterPlayers() {
   const genderValue = document.getElementById("gender").value;
   document.getElementById("search").value = "";
   if (genderValue) {
-    document.getElementById("results").innerHTML = "Searching for players...";
-    const apiEndpoint = `/api/players/${genderValue}`;
-
-    try {
-      const response = await fetch(apiEndpoint, {
-        method: "GET",
-        headers: {
-          "X-Filter": "gender",
-        },
-      });
-      const players = await response.json();
-      if (players && players.length > 0) {
-        displayPlayers(players);
-      } else {
-        document.getElementById("results").innerHTML = "No players found.";
-      }
-    } catch (error) {
-      console.error("Error fetching players:", error);
-      document.getElementById("results").innerHTML = "Error fetching players.";
-    }
+    fetchAndDisplayPlayers("gender", genderValue);
   } else {
-    document.getElementById("results").innerHTML = "";
+    results.innerHTML = "";
   }
 }
 
 function displayPlayers(players) {
-  const resultsDiv = document.getElementById("results");
+  results.innerHTML = players.length > 0 ? "" : "No players found.";
   const downloadButton = document.getElementById("download-results");
+  downloadButton.classList.toggle("cursor-not-allowed", players.length === 0);
+  downloadButton.disabled = players.length === 0;
 
-  resultsDiv.innerHTML = ""; // Clear previous results
+  players.forEach((player) => {
+    const playerElement = document.createElement("div");
+    playerElement.className = "p-4 mb-2 bg-white rounded shadow cursor-pointer";
+    playerElement.innerHTML = getPlayerHTML(player);
 
-  // Check if there are players and update button state
-  if (players.length > 0) {
-    downloadButton.classList.remove("cursor-not-allowed");
-    downloadButton.removeAttribute("disabled");
-    downloadButton.classList.add("cursor-pointer");
-
-    // Create and append the player elements to the resultsDiv
-    players.forEach((player) => {
-      const playerElement = document.createElement("div");
-      playerElement.className =
-        "p-4 mb-2 bg-white rounded shadow cursor-pointer";
-      playerElement.innerHTML = `
-        <p><strong>Name:</strong> ${player.firstname} ${player.lastname}</p>
-        <p><strong>Club:</strong> ${player.club}</p>
-        <p><strong>Title:</strong> ${player.title}</p>
-        <p><strong>Gender:</strong> ${player.gender}</p>
-        <p><strong>Status:</strong> ${player.status}</p>
-        <!-- Add more player details here -->
-      `;
-
-      // Add click event for redirection
-      playerElement.addEventListener("click", () => {
-        // Replace 'playerPageURL' with the actual URL of the player
-        window.location.href = `/player.html?playerId=${player._id}`;
-      });
-
-      resultsDiv.appendChild(playerElement);
+    playerElement.addEventListener("click", () => {
+      window.location.href = `/player.html?playerId=${player._id}`;
     });
-  } else {
-    downloadButton.classList.add("cursor-not-allowed");
-    downloadButton.setAttribute("disabled", "disabled");
-    // Display a message indicating no results were found
-    resultsDiv.innerHTML =
-      "<p class='text-center text-dark'>No players found.</p>";
-  }
+
+    results.appendChild(playerElement);
+  });
+}
+
+function getPlayerHTML(player) {
+  return `
+    <p><strong>Name:</strong> ${player.firstname} ${player.lastname}</p>
+    <p><strong>Club:</strong> ${player.club}</p>
+    <p><strong>Title:</strong> ${player.title}</p>
+    <p><strong>Gender:</strong> ${player.gender}</p>
+    <p><strong>Status:</strong> ${player.status}</p>
+    <!-- Add more player details here -->
+  `;
 }
