@@ -21,19 +21,14 @@
       };
     </script>
   </head>
-  <body class="bg-light">
-    <main>
-      <section>
-        <div class="container mx-auto p-4">
-          <h1 class="text-4xl font-bold mb-6 text-dark">Player Profile</h1>
-          <div
-            id="playerProfile"
-            class="flex flex-col md:flex-row bg-white p-4 rounded shadow-lg"
-          >
-            <!-- Player details will be loaded here -->
-          </div>
-        </div>
-      </section>
+  <body class="bg-[#020202] h-screen flex items-end">
+    <main class="h-5/6 w-full">
+      <div
+        id="playerProfile"
+        class="flex flex-col md:flex-row p-4 rounded shadow-lg h-5/6"
+      >
+        <!-- Player details will be loaded here -->
+      </div>
     </main>
 
     <script>
@@ -81,34 +76,72 @@
       function displayPlayer(player) {
         const playerProfileDiv = document.getElementById("playerProfile");
         playerProfileDiv.innerHTML = `
-          <img
-            src="${player.avatar}"
-            alt="${player.firstname} ${player.lastname}"
-            class="w-48 h-48 rounded-full mx-auto md:mx-0 md:mr-8"
-          />
-          <div class="text-lg mt-4 md:mt-0">
-            <p class="text-accent font-bold text-2xl">
+       <article class='flex-col w-full h-full'>
+        <div class='w-full -mt-20 bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent text-6xl bg-white'>
+          <div class='text-center'>
               ${player.firstname} ${player.lastname}
-            </p>
-            <p class="text-dark">
-              <strong>Club:</strong> ${player.club.name}
-            </p>
-            <p class="text-dark">
-              <strong>Status:</strong> ${player.status}
-            </p>
-            <p class="text-dark">
-              <strong>Title:</strong> ${player.title}
-            </p>
-            <p class="text-dark">
-              <strong>FIDE ID:</strong> ${player.fide}
-            </p>
-            <p class="text-dark">
-              <strong>Year:</strong> ${player.year}
-            </p>
-            <p class="text-dark">
-              <strong>Gender:</strong> ${player.gender}
-            </p>
+            </div>
+              </div>
+        <div class='flex mt-10 w-full h-full'>
+          <div class='w-1/2 flex justify-center'>
+            <img
+              src="${player.avatar}"
+              alt="${player.firstname} ${player.lastname}"
+              class="h-full w-auto "
+            />
           </div>
+          <div class="grid grid-cols-3 w-1/2 h-full gap-5">
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent col-span-2">
+                <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>Club</p> 
+                  <p class='text-2xl'>${player.club.name}</p>
+                </div>
+              </div>
+              <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+              <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>City</p> 
+                  <p class='text-lg text-center uppercase'>${player.club.county.name}</p>
+              </div>
+            </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+              <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>Status</p> 
+                  <p class='text-2xl text-center uppercase'>${player.status}</p>
+              </div>
+            </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+            <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>Title</p> 
+                  <p class='text-2xl text-center uppercase'>${player.title}</p>
+            </div>
+            </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+            <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>FIDE ID</p> 
+                  <p class='text-2xl text-center uppercase'>${player.fide}</p>
+              </div>
+            </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+            <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>Year</p> 
+                  <p class='text-2xl text-center uppercase'>${player.year}</p>
+              </div>
+              </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+            <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>Gender</p> 
+                  <p class='text-2xl text-center uppercase'>${player.gender}</p>
+              </div>
+              </div>
+            <div class="border border-1 border-[#8E6233] rounded-xl flex justify-center items-center bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+            <div class='flex-col items-center justify-center'>
+                  <p class='text-center font-bold uppercase text-xl'>CIV</p> 
+                  <p class='text-2xl text-center uppercase'>${player.civ}</p>
+              </div>
+              </div>
+          </div>
+        </div>
+        </article>
         `;
       }
 
