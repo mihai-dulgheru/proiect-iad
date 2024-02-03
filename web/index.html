@@ -6,6 +6,8 @@
     <title>Chess Players Directory</title>
     <script defer src="index.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css" />
     <script>
       tailwind.config = {
         theme: {
@@ -21,28 +23,68 @@
         },
       };
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-light">
-    <main class="max-w-5xl mx-auto p-4">
-      <div class="container mx-auto flex flex-col gap-6">
-        <h1 class="text-4xl font-bold text-dark mt-6">
+  <body class="bg-[#020202] box-border">
+    <section
+      class="bg-[url('/images/hero-image.jpg')] bg-cover h-screen justify-center relative text-[#BE995E] font-semibold text-[100px]"
+    >
+      <h1
+        class="absolute top-44 left-60 bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent"
+      >
+        Chessmaster
+      </h1>
+      <h1
+        class="absolute top-44 right-96 bg-gradient-to-l from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent"
+      >
+        Showcase
+      </h1>
+      <h3 class="text-lg absolute top-80 left-52">
+        Meet Chess Masters. Explore profiles, games, and achievements. Your
+        gateway
+      </h3>
+      <h3 class="text-lg absolute top-80 right-60">
+        to the world of strategic brilliance. Checkmate curiosity, discover
+        greatness.
+      </h3>
+    </section>
+
+    <main class="mx-auto p-4 min-h-full bg-[#020202] w-full">
+      <div class="container mx-auto flex flex-col gap-6 mt-10">
+        <h1
+          class="text-4xl font-bold text-dark mt-6 text-center text-[#DFDED6] bg-gradient-to-r from-white via-[#D3B589] to-white bg-clip-text text-transparent"
+        >
           Chess Players Directory
         </h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
           <!-- TODO: use debounce and add clear button -->
-          <input
-            type="text"
-            id="search"
-            placeholder="Search players..."
-            class="p-2 border rounded bg-white text-dark"
-            onkeyup="searchPlayers()"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-          />
+          <div
+            class="col-span-7 flex border border-1 border-[#6b7280] rounded-lg"
+          >
+            <span
+              class="flex justify-center items-center font-bold p-3 text-2xl"
+            >
+              <i class="ph-bold ph-magnifying-glass text-[#E8E7E2]"></i>
+            </span>
+            <input
+              type="text"
+              id="search"
+              placeholder="Search players..."
+              class="p-2 w-full bg-[#020202] outline-none text-[#E8E7E2] search-input"
+              onkeyup="searchPlayers()"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+            />
+          </div>
           <select
             id="gender"
-            class="p-2 border rounded bg-white text-dark"
+            class="p-2 bg-[#020202] text-white outline-none border border-1 border-[#6b7280] rounded-lg col-span-2"
             onchange="filterPlayers()"
           >
             <option value="">Select Gender</option>
@@ -53,34 +95,92 @@
           <!-- Aggregation example: Count by gender -->
           <button
             id="aggregate"
-            class="p-2 rounded text-white bg-accent"
+            class="p-2 rounded text-white bg-accent bg-transparent text-white outline-none border border-1 border-[#6b7280] rounded-lg"
             onclick="aggregatePlayers()"
           >
-            Count Players by Gender
+            Count by Gender
           </button>
           <!-- Sorting example: Sort by last name -->
-          <button
+          <!-- <button
             id="sort"
             class="p-2 rounded text-white bg-secondary"
             onclick="sortPlayers()"
           >
             Sort Players by Last Name
-          </button>
-        </div>
-        <div class="w-full flex items-center justify-end">
+          </button> -->
           <button
+            class="py-2 rounded text-white bg-accent bg-transparent text-white outline-none border border-1 border-[#6b7280] rounded-lg"
+          >
+            <i class="ph ph-sort-descending text-white text-xl"></i>
+          </button>
+          <!-- <button
+            class="py-2 rounded text-white bg-accent bg-transparent text-white outline-none border border-1 border-[#6b7280] rounded-lg"
+          >
+            <i class="ph ph-sort-ascending text-white"></i>
+          </button> -->
+
+          <!-- <button
             id="download-results"
             class="p-2 rounded text-white bg-primary cursor-not-allowed"
             onclick="downloadResults()"
             disabled
           >
             Download Results
+          </button> -->
+          <button
+            class="py-2 rounded text-white bg-accent bg-transparent text-white outline-none border border-1 border-[#6b7280] rounded-lg"
+            id="download-results"
+            class="p-2 rounded text-white bg-primary cursor-not-allowed"
+            onclick="downloadResults()"
+            disabled
+          >
+            <i class="ph ph-download-simple text-white"></i>
           </button>
         </div>
-        <div id="results" class="text-dark">
+
+        <div
+          id="countByGender"
+          class="text-dark bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E]"
+        >
+          <table class="w-full h-full">
+            <thead
+              class="bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] text-black"
+            >
+              <th class="py-2">Male</th>
+              <th>Female</th>
+              <th>Others</th>
+            </thead>
+            <tbody
+              class="border-b border-l border-r border-1 border-[#BE995E] text-[#BE995E] font-bold bg-[#020202]"
+            >
+              <tr>
+                <td class="text-center py-2">12</td>
+                <td class="text-center">45</td>
+                <td class="text-center">2</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Result of the aggregation will be displayed here-->
+        </div>
+
+        <div id="results" class="text-dark grid grid-cols-4 gap-10">
           <!-- Results will be displayed here -->
         </div>
       </div>
     </main>
+    <footer
+      class="mt-44 bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] flex-col gap-20 text-gray-800"
+    >
+      <div class="mx-[500px] mb-10 pt-6 text-center">
+        Explore the strategic minds behind the moves. ChessMaster Showcase is
+        your gateway to the brilliance of grandmasters. Stay connected with the
+        world of chess excellence. Checkmate your curiosity, and immerse
+        yourself in the game of kings.
+      </div>
+      <div class="text-center font-semibold">
+        Copyright © 2024 Colceag Ioana, Comorașu Claudiu-Adrian, Dulgheru
+        Mihai-Nicolae
+      </div>
+    </footer>
   </body>
 </html>

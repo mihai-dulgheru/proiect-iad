@@ -1,0 +1,29 @@
+.search-input {
+  width: 100%;
+  outline: 0;
+  border: 0;
+  padding: 10px 0;
+  background: transparent;
+  font-size: 1em;
+  color: #ffffff;
+  transition: 0.3 ease;
+}
+
+.select-input {
+  width: 100%;
+  outline: none;
+  border: none;
+  border-bottom: 0.125rem solid #aaa;
+  padding: 10px 0;
+  background: transparent;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #6b7280;
+}
