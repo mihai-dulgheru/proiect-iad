@@ -29,7 +29,6 @@
           Chess Players Directory
         </h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- TODO: use debounce and add clear button -->
           <input
             type="text"
             id="search"
@@ -63,6 +62,8 @@
             id="sort"
             class="p-2 rounded text-white bg-secondary"
             onclick="sortPlayers()"
+            data-sort-asc="true"
+            data-sort-by="lastname"
           >
             Sort Players by Last Name
           </button>
