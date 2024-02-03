@@ -1,198 +1,6 @@
 const apiEndpoint = "/api/players";
 const results = document.getElementById("results");
 
-const DUMMY_DATA = [
-  {
-    firstname: "Magnus",
-    lastname: "Carlsen",
-    club: "World Chess Club",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Vishy",
-    lastname: "Anand",
-    club: "International Chess Association",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Judith",
-    lastname: "Polgar",
-    club: "Hungarian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Hou",
-    lastname: "Yifan",
-    club: "Chinese Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Levon",
-    lastname: "Aronian",
-    club: "Armenian Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Nona",
-    lastname: "Gaprindashvili",
-    club: "Georgian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Garry",
-    lastname: "Kasparov",
-    club: "Russian Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Judit",
-    lastname: "Polgar",
-    club: "Hungarian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Viswanathan",
-    lastname: "Anand",
-    club: "International Chess Association",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Maia",
-    lastname: "Chiburdanidze",
-    club: "Georgian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Bobby",
-    lastname: "Fischer",
-    club: "United States Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Pia",
-    lastname: "Cramling",
-    club: "Swedish Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Fabiano",
-    lastname: "Caruana",
-    club: "United States Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Nigel",
-    lastname: "Short",
-    club: "English Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Antoaneta",
-    lastname: "Stefanova",
-    club: "Bulgarian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Mikhail",
-    lastname: "Tal",
-    club: "Latvian Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Nana",
-    lastname: "Dzagnidze",
-    club: "Georgian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Alexander",
-    lastname: "Alekhine",
-    club: "Russian Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Kateryna",
-    lastname: "Lagno",
-    club: "Russian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Maxime",
-    lastname: "Vachier-Lagrave",
-    club: "French Chess Federation",
-    title: "Grandmaster",
-    gender: "Male",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-  {
-    firstname: "Judit",
-    lastname: "Polgar",
-    club: "Hungarian Chess Federation",
-    title: "Grandmaster",
-    gender: "Female",
-    status: "Active",
-    avatar: "/images/player.svg",
-  },
-];
-
 async function fetchAndDisplayPlayers(filterType, filterValue) {
   results.innerHTML = "Searching for players...";
 
@@ -204,11 +12,9 @@ async function fetchAndDisplayPlayers(filterType, filterValue) {
         "X-Filter-Value": filterValue,
       },
     });
+    const players = await response.json();
 
-    // comment this line for testing and add DUMMY_DATA in the displayPlayers function
-    // const players = await response.json();
-
-    displayPlayers(DUMMY_DATA);
+    displayPlayers(players);
   } catch (error) {
     console.error("Error fetching players:", error);
     results.innerHTML = "Error fetching players.";
@@ -236,7 +42,6 @@ function filterPlayers() {
 }
 
 function displayPlayers(players) {
-  console.log(players);
   results.innerHTML = players.length > 0 ? "" : "No players found.";
   const downloadButton = document.getElementById("download-results");
   downloadButton.classList.toggle("cursor-not-allowed", players.length === 0);
