@@ -206,9 +206,9 @@ async function fetchAndDisplayPlayers(filterType, filterValue) {
     });
 
     // comment this line for testing and add DUMMY_DATA in the displayPlayers function
-    const players = await response.json();
+    // const players = await response.json();
 
-    displayPlayers(players);
+    displayPlayers(DUMMY_DATA);
   } catch (error) {
     console.error("Error fetching players:", error);
     results.innerHTML = "Error fetching players.";
@@ -262,7 +262,7 @@ function getPlayerHTML(player) {
       <div class='h-44 flex justify-center'>
         <img src="${player.avatar}" alt="" class='h-full'>
       </div>
-      <div class="bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] text-black pl-3 py-2">
+      <div class="bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] text-black pl-3 py-2 rounded-b-lg">
       <p><strong>Name:</strong> ${player.firstname} ${player.lastname}</p>
       <p><strong>Club:</strong> ${player.club}</p>
       <p><strong>Title:</strong> ${player.title}</p>
