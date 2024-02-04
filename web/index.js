@@ -78,7 +78,8 @@ function displayPlayers(players) {
 
   players.forEach((player) => {
     const playerElement = document.createElement("div");
-    playerElement.className = "p-4 mb-2 bg-white rounded shadow cursor-pointer";
+    playerElement.className =
+      "p-0 m-0 bg-transparent rounded-xl shadow cursor-pointer border border-1.5 border-[#BE995E]";
     playerElement.innerHTML = getPlayerHTML(player);
 
     playerElement.addEventListener("click", () => {
@@ -91,11 +92,24 @@ function displayPlayers(players) {
 
 function getPlayerHTML(player) {
   return `
-    <p><strong>Name:</strong> ${player.firstname} ${player.lastname}</p>
-    <p><strong>Club:</strong> ${player.club}</p>
-    <p><strong>Title:</strong> ${player.title}</p>
-    <p><strong>Gender:</strong> ${player.gender}</p>
-    <p><strong>Status:</strong> ${player.status}</p>
+    <div class="h-full flex flex-col justify-between">
+      <div class="h-44 flex justify-center">
+        <img
+          src="${player.avatar}"
+          alt="${player.firstname} ${player.lastname}"
+          class="h-full"
+        />
+      </div>
+      <div
+        class="h-full bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] text-black pl-3 py-2 rounded-b-lg"
+      >
+        <p><strong>Name:</strong> ${player.firstname} ${player.lastname}</p>
+        <p><strong>Club:</strong> ${player.club}</p>
+        <p><strong>Title:</strong> ${player.title}</p>
+        <p><strong>Gender:</strong> ${player.gender}</p>
+        <p><strong>Status:</strong> ${player.status}</p>
+      </div>
+    </div>
     <!-- Add more player details here -->
   `;
 }
@@ -121,14 +135,14 @@ async function aggregatePlayers() {
   try {
     const response = await fetch(`${apiEndpoint}/aggregate`);
     if (response.status === 200) {
-      results.innerHTML = "Aggregation was successful.";
+      aggregateButton.innerHTML = "Aggregation complete.";
     }
   } catch (error) {
+    aggregateButton.innerHTML = "Aggregation failed.";
     console.error("Error aggregating players:", error);
     results.innerHTML = "Error aggregating players.";
   } finally {
     aggregateButton.disabled = false;
-    aggregateButton.innerHTML = "Count Players by Gender";
   }
 }
 
@@ -159,13 +173,14 @@ async function downloadResults() {
       a.href = url;
       a.download = "players.json";
       a.click();
+      downloadButton.innerHTML = "Download complete.";
     }
   } catch (error) {
     console.error("Error downloading results:", error);
+    downloadButton.innerHTML = "Download failed.";
     results.innerHTML = "Error downloading results.";
   } finally {
     downloadButton.disabled = false;
-    downloadButton.innerHTML = "Download Results";
   }
 }
 

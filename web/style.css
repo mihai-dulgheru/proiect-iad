@@ -1,0 +1,42 @@
+.search-input {
+  width: 100%;
+  outline: 0;
+  border: 0;
+  padding: 10px 0;
+  background: transparent;
+  font-size: 1em;
+  color: #ffffff;
+  transition: 0.3 ease;
+}
+
+.select-input {
+  width: 100%;
+  outline: none;
+  padding: 10px 0;
+  color: #fff;
+}
+
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #bfa76e #000;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #000;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #bfa76e;
+  border-radius: 6px;
+  border: 3px solid #000;
+}
