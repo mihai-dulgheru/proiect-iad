@@ -53,6 +53,10 @@ public class Player {
         List<Map<String, Object>> results = (List<Map<String, Object>>) body.get("pages");
         for (var result : results) {
             Map<String, Object> club = (Map<String, Object>) result.get("club");
+            String avatar = (String) result.get("avatar");
+            if (avatar == null) {
+                avatar = "https://chesscoders.fra1.digitaloceanspaces.com/frsah-portal/default-avatar.webp";
+            }
             players.add(new Player(
                     (String) result.get("_id"),
                     (String) club.get("name"),
@@ -63,7 +67,7 @@ public class Player {
                     (String) result.get("gender"),
                     (String) result.get("fide"),
                     (String) result.get("title"),
-                    (String) result.get("avatar")));
+                    avatar));
         }
         return players;
     }
@@ -72,7 +76,11 @@ public class Player {
     public static Player extractPlayer(Exchange exchange) {
         Map<String, Object> body = exchange.getIn().getBody(Map.class);
         Map<String, Object> club = (Map<String, Object>) body.get("club");
-        Player player = new Player(
+        String avatar = (String) body.get("avatar");
+        if (avatar == null) {
+            avatar = "https://chesscoders.fra1.digitaloceanspaces.com/frsah-portal/default-avatar.webp";
+        }
+        return new Player(
                 (String) body.get("_id"),
                 (String) club.get("name"),
                 (String) body.get("status"),
@@ -82,8 +90,7 @@ public class Player {
                 (String) body.get("gender"),
                 (String) body.get("fide"),
                 (String) body.get("title"),
-                (String) body.get("avatar"));
-        return player;
+                avatar);
     }
 
     public static List<Player> filterPlayers(List<Player> players, String filterType, String filterValue) {

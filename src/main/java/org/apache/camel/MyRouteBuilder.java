@@ -295,8 +295,7 @@ public class MyRouteBuilder extends RouteBuilder {
                     SimpleCache.put(cacheKey, enrichedPlayer);
                 })
                 .end()
-                .marshal().json(JsonLibrary.Jackson)
-                .log("Body ${body}");
+                .marshal().json(JsonLibrary.Jackson);
 
         from("direct:calculateAge")
                 .process(exchange -> {

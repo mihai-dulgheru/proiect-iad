@@ -60,7 +60,7 @@
               <img
                 src="${player.avatar}"
                 alt="${player.firstname} ${player.lastname}"
-                class="h-full w-auto"
+                class="h-full w-auto rounded-xl"
               />
             </div>
             <div class="grid h-full w-1/2 grid-cols-3 gap-5">
@@ -69,17 +69,7 @@
               >
                 <div class="flex-col items-center justify-center">
                   <p class="text-center text-xl font-bold uppercase">Club</p>
-                  <p class="text-2xl">${player.club.name}</p>
-                </div>
-              </div>
-              <div
-                class="border-1 flex items-center justify-center rounded-xl border border-[#8E6233] bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent"
-              >
-                <div class="flex-col items-center justify-center">
-                  <p class="text-center text-xl font-bold uppercase">City</p>
-                  <p class="text-center text-lg uppercase">
-                    ${player.club.county.name}
-                  </p>
+                  <p class="text-2xl">${player.club}</p>
                 </div>
               </div>
               <div
@@ -126,8 +116,23 @@
                 class="border-1 flex items-center justify-center rounded-xl border border-[#8E6233] bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent"
               >
                 <div class="flex-col items-center justify-center">
-                  <p class="text-center text-xl font-bold uppercase">CIV</p>
-                  <p class="text-center text-2xl uppercase">${player.civ}</p>
+                  <p class="text-center text-xl font-bold uppercase">Age</p>
+                  <p class="text-center text-2xl uppercase">${player.age}</p>
+                </div>
+              </div>
+              <div
+                class="border-1 flex items-center justify-center rounded-xl border border-[#8E6233] bg-gradient-to-r from-[#8E6233] via-[#D3B589] to-[#BE995E] bg-clip-text text-transparent">
+                <div class="flex-col items-center justify-center">
+                  <p class="text-center text-xl font-bold uppercase">
+                    Can Check In Alone
+                  </p>
+                  <p class="text-center text-2xl uppercase">
+                    ${
+                      player.canCheckInAlone
+                        ? "Allowed to Check In Alone"
+                        : "Not Allowed to Check In Alone"
+                    }
+                  </p>
                 </div>
               </div>
             </div>
