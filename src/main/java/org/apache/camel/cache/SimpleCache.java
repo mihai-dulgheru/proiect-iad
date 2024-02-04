@@ -1,4 +1,4 @@
-package org.apache.camel;
+package org.apache.camel.cache;
 
 import java.util.HashMap;
 import java.util.Map;

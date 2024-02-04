@@ -3,17 +3,12 @@ const results = document.getElementById("results");
 
 async function fetchAndDisplayPlayers(queryKey, queryValue) {
   results.innerHTML = "Searching for players...";
-
   try {
     const response = await fetch(`${apiEndpoint}/players`, {
       method: "GET",
-      headers: {
-        "X-Query-Key": queryKey,
-        "X-Query-Value": queryValue,
-      },
+      headers: { "X-Query-Key": queryKey, "X-Query-Value": queryValue },
     });
     const players = await response.json();
-
     displayPlayers(players);
   } catch (error) {
     console.error("Error fetching players:", error);
@@ -23,11 +18,9 @@ async function fetchAndDisplayPlayers(queryKey, queryValue) {
 
 async function displayAllPlayers() {
   results.innerHTML = "Loading players...";
-
   try {
     const response = await fetch(`${apiEndpoint}/players`);
     const players = await response.json();
-
     displayPlayers(players);
   } catch (error) {
     console.error("Error fetching players:", error);
@@ -35,7 +28,7 @@ async function displayAllPlayers() {
   }
 }
 
-const debounce = (func, delay = 300) => {
+function debounce(func, delay = 300) {
   let debounceTimer;
   return function () {
     const context = this;
@@ -43,15 +36,14 @@ const debounce = (func, delay = 300) => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => func.apply(context, args), delay);
   };
-};
+}
 
-const displayAllPlayersDebounced = debounce(displayAllPlayers, 300);
-const fetchAndDisplayPlayersDebounced = debounce(fetchAndDisplayPlayers, 300);
+const displayAllPlayersDebounced = debounce(displayAllPlayers);
+const fetchAndDisplayPlayersDebounced = debounce(fetchAndDisplayPlayers);
 
 function searchPlayers() {
   const searchValue = document.getElementById("search").value;
   document.getElementById("gender").value = "";
-
   if (searchValue.length) {
     fetchAndDisplayPlayersDebounced("search", searchValue);
   } else {
@@ -59,14 +51,18 @@ function searchPlayers() {
   }
 }
 
+function clearSearch() {
+  document.getElementById("search").value = "";
+  displayAllPlayersDebounced();
+}
+
 function filterPlayers() {
   const genderValue = document.getElementById("gender").value;
   document.getElementById("search").value = "";
-
   if (genderValue) {
-    fetchAndDisplayPlayers("gender", genderValue);
+    fetchAndDisplayPlayersDebounced("gender", genderValue);
   } else {
-    displayAllPlayers();
+    displayAllPlayersDebounced();
   }
 }
 
@@ -75,17 +71,14 @@ function displayPlayers(players) {
   const downloadButton = document.getElementById("download-results");
   downloadButton.classList.toggle("cursor-not-allowed", players.length === 0);
   downloadButton.disabled = players.length === 0;
-
   players.forEach((player) => {
     const playerElement = document.createElement("div");
     playerElement.className =
       "p-0 m-0 bg-transparent rounded-xl shadow cursor-pointer border border-1.5 border-[#BE995E]";
     playerElement.innerHTML = getPlayerHTML(player);
-
     playerElement.addEventListener("click", () => {
       window.location.href = `/web/player.html?playerId=${player._id}`;
     });
-
     results.appendChild(playerElement);
   });
 }
@@ -117,7 +110,6 @@ function getPlayerHTML(player) {
 function sortPlayers() {
   document.getElementById("gender").value = "";
   document.getElementById("search").value = "";
-
   const sortDirection =
     document.getElementById("sort").getAttribute("data-sort-asc") === "true"
       ? "asc"
@@ -125,7 +117,7 @@ function sortPlayers() {
   document
     .getElementById("sort")
     .setAttribute("data-sort-asc", sortDirection === "asc" ? "false" : "true");
-  fetchAndDisplayPlayers("sort", sortDirection);
+  fetchAndDisplayPlayersDebounced("sort", sortDirection);
 }
 
 async function aggregatePlayers() {
@@ -159,9 +151,7 @@ async function downloadResults() {
     });
     const response = await fetch(`${apiEndpoint}/players/download`, {
       method: "GET",
-      headers: {
-        "X-Query-String-Parameters": searchParams.toString(),
-      },
+      headers: { "X-Query-String-Parameters": searchParams.toString() },
     });
     if (response.status === 200) {
       const players = await response.json();
@@ -184,4 +174,4 @@ async function downloadResults() {
   }
 }
 
-displayAllPlayers();
+displayAllPlayersDebounced();

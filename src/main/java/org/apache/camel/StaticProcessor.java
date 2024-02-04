@@ -5,31 +5,32 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class StaticProcessor implements Processor {
-    private final String folder;
+    private final Path folderPath;
 
     public StaticProcessor(String folder) {
-        this.folder = folder;
+        this.folderPath = Paths.get(folder).toAbsolutePath().normalize();
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        String path = exchange.getIn().getHeader(Exchange.HTTP_PATH, String.class);
+        String path = (String) exchange.getIn().getHeader(Exchange.HTTP_PATH);
 
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        if (path.isEmpty() || path.endsWith("/")) {
-            path += "index.html";
-        }
+        path = path.startsWith("/") ? path.substring(1) : path;
 
-        Path folderPath = Paths.get(folder, path);
+        Path resolvedPath = folderPath.resolve(path).normalize();
 
-        if (Files.isDirectory(folderPath)) {
-            folderPath = folderPath.resolve("index.html");
+        if (!resolvedPath.startsWith(folderPath)) {
+            exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 403);
+            exchange.getIn().setBody("403 Forbidden");
+            return;
         }
 
-        if (Files.exists(folderPath) && !Files.isDirectory(folderPath)) {
-            exchange.getIn().setBody(Files.readString(folderPath));
+        if (Files.isDirectory(resolvedPath)) {
+            resolvedPath = resolvedPath.resolve("index.html");
+        }
+
+        if (Files.exists(resolvedPath) && !Files.isDirectory(resolvedPath)) {
+            exchange.getIn().setBody(Files.readString(resolvedPath));
         } else {
             exchange.getIn().setHeader(Exchange.HTTP_RESPONSE_CODE, 404);
             exchange.getIn().setBody("404 Not Found");

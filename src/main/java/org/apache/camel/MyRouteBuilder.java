@@ -3,8 +3,10 @@ package org.apache.camel;
 import org.apache.camel.aggregationStrategies.AgeEnrichmentAggregationStrategy;
 import org.apache.camel.aggregationStrategies.GenderAggregationStrategy;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.cache.SimpleCache;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.util.UniqueIdentifierGenerator;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -13,41 +15,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * A Camel Java DSL Router
- */
+@SuppressWarnings({"DuplicatedCode", "unchecked"})
 public class MyRouteBuilder extends RouteBuilder {
+    private static final Integer PER_PAGE = 900;
+    private static final Integer PORT = 8080;
+    private static final String CONTEXT_PATH = "/api";
+    private static final String FOLDER = "web/";
     private static final String HOSTNAME = "localhost";
-    private static final int PORT = 8080;
-    private static final String FOLDER = "web";
+    private static final String URI = "https://portal.frsah.ro/api/public/players";
 
-    /**
-     * Let's configure the Camel routing rules using Java code...
-     */
-    @SuppressWarnings({"unchecked"})
     public void configure() {
 
-        // Error handling
         onException(Exception.class)
                 .process(exchange -> {
                     Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT,
                             Exception.class);
-                    System.err.println("Eroare: " + exception.getMessage());
+                    System.err.println("Error: " + exception.getMessage());
                 })
                 .handled(true);
 
-        // Static content
         fromF("jetty:http://%s:%d/%s?matchOnUriPrefix=true", HOSTNAME, PORT, FOLDER)
                 .process(new StaticProcessor(FOLDER));
 
-        // REST API
         restConfiguration()
                 .host(HOSTNAME)
                 .port(PORT)
                 .component("jetty")
-                .contextPath("/api");
+                .contextPath(CONTEXT_PATH);
 
-        // REST API routes for players
         rest("/players")
                 .produces("application/json")
                 .get("/")
@@ -88,8 +83,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setBody(constant(""))
-                .setHeader(Exchange.HTTP_QUERY, simple("per_page=900&no_cache=${header.NoCache}"))
-                .to("https://portal.frsah.ro/api/public/players")
+                .setHeader(Exchange.HTTP_QUERY, simple("per_page=" + PER_PAGE + "&no_cache=${header.NoCache}"))
+                .to(URI)
                 .convertBodyTo(String.class)
                 .unmarshal()
                 .json(JsonLibrary.Jackson)
@@ -130,8 +125,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setBody(constant(""))
-                .setHeader(Exchange.HTTP_QUERY, simple("per_page=900&no_cache=${header.NoCache}"))
-                .to("https://portal.frsah.ro/api/public/players")
+                .setHeader(Exchange.HTTP_QUERY, simple("per_page=" + PER_PAGE + "&no_cache=${header.NoCache}"))
+                .to(URI)
                 .convertBodyTo(String.class)
                 .unmarshal()
                 .json(JsonLibrary.Jackson)
@@ -171,8 +166,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setBody(constant(""))
-                .setHeader(Exchange.HTTP_QUERY, simple("per_page=900&no_cache=${header.NoCache}"))
-                .to("https://portal.frsah.ro/api/public/players")
+                .setHeader(Exchange.HTTP_QUERY, simple("per_page=" + PER_PAGE + "&no_cache=${header.NoCache}"))
+                .to(URI)
                 .convertBodyTo(String.class)
                 .unmarshal()
                 .json(JsonLibrary.Jackson)
@@ -212,8 +207,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setBody(constant(""))
-                .setHeader(Exchange.HTTP_QUERY, simple("per_page=900&no_cache=${header.NoCache}"))
-                .toD("https://portal.frsah.ro/api/public/players")
+                .setHeader(Exchange.HTTP_QUERY, simple("per_page=" + PER_PAGE + "&no_cache=${header.NoCache}"))
+                .toD(URI)
                 .convertBodyTo(String.class)
                 .unmarshal()
                 .json(JsonLibrary.Jackson)
@@ -233,8 +228,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setBody(constant(""))
-                .setHeader(Exchange.HTTP_QUERY, simple("per_page=900&no_cache=${header.NoCache}"))
-                .toD("https://portal.frsah.ro/api/public/players")
+                .setHeader(Exchange.HTTP_QUERY, simple("per_page=" + PER_PAGE + "&no_cache=${header.NoCache}"))
+                .toD(URI)
                 .convertBodyTo(String.class)
                 .unmarshal()
                 .json(JsonLibrary.Jackson)
@@ -281,7 +276,7 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept", constant("application/json"))
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setHeader(Exchange.HTTP_QUERY, simple("no_cache=${header.NoCache}"))
-                .toD("https://portal.frsah.ro/api/public/players/${header.id}")
+                .toD(URI + "/${header.id}")
                 .unmarshal().json(JsonLibrary.Jackson)
                 .bean(Player.class, "extractPlayer")
                 .process(exchange -> {
@@ -331,7 +326,7 @@ public class MyRouteBuilder extends RouteBuilder {
 
         from("direct:aggregateGender")
                 .aggregate(new GenderAggregationStrategy()).constant(true)
-                .completionSize(900)
+                .completionSize(PER_PAGE)
                 .completionTimeout(1000)
                 .process(exchange -> {
                     Map<String, Integer> aggregatedGenderCount = exchange.getIn().getBody(Map.class);

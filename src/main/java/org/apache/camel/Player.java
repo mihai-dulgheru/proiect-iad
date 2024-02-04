@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"unused", "unchecked"})
 public class Player {
     @JsonProperty
     private String _id;
@@ -46,7 +47,6 @@ public class Player {
         this.avatar = avatar;
     }
 
-    @SuppressWarnings("unchecked")
     public static List<Player> extractPlayers(Exchange exchange) {
         List<Player> players = new ArrayList<>();
         Map<String, Object> body = exchange.getIn().getBody(Map.class);
@@ -72,7 +72,6 @@ public class Player {
         return players;
     }
 
-    @SuppressWarnings("unchecked")
     public static Player extractPlayer(Exchange exchange) {
         Map<String, Object> body = exchange.getIn().getBody(Map.class);
         Map<String, Object> club = (Map<String, Object>) body.get("club");
@@ -156,8 +155,16 @@ public class Player {
         return avatar;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Boolean getCanCheckInAlone() {
+        return canCheckInAlone;
     }
 
     public void setCanCheckInAlone(Boolean canCheckInAlone) {

@@ -1,4 +1,4 @@
-package org.apache.camel;
+package org.apache.camel.util;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
