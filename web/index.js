@@ -12,7 +12,7 @@ async function fetchAndDisplayPlayers(queryKey, queryValue) {
     displayPlayers(players);
   } catch (error) {
     console.error("Error fetching players:", error);
-    results.innerHTML = "Error fetching players.";
+    results.innerHTML = "Error fetching players";
   }
 }
 
@@ -24,7 +24,7 @@ async function displayAllPlayers() {
     displayPlayers(players);
   } catch (error) {
     console.error("Error fetching players:", error);
-    results.innerHTML = "Error fetching players.";
+    results.innerHTML = "Error fetching players";
   }
 }
 
@@ -67,7 +67,7 @@ function filterPlayers() {
 }
 
 function displayPlayers(players) {
-  results.innerHTML = players.length > 0 ? "" : "No players found.";
+  results.innerHTML = players.length > 0 ? "" : "No players found";
   const downloadButton = document.getElementById("download-results");
   downloadButton.classList.toggle("cursor-not-allowed", players.length === 0);
   downloadButton.disabled = players.length === 0;
@@ -127,12 +127,12 @@ async function aggregatePlayers() {
   try {
     const response = await fetch(`${apiEndpoint}/aggregate`);
     if (response.status === 200) {
-      aggregateButton.innerHTML = "Aggregation complete.";
+      aggregateButton.innerHTML = "Aggregation complete";
     }
   } catch (error) {
-    aggregateButton.innerHTML = "Aggregation failed.";
+    aggregateButton.innerHTML = "Aggregation failed";
     console.error("Error aggregating players:", error);
-    results.innerHTML = "Error aggregating players.";
+    results.innerHTML = "Error aggregating players";
   } finally {
     aggregateButton.disabled = false;
   }
@@ -163,12 +163,12 @@ async function downloadResults() {
       a.href = url;
       a.download = "players.json";
       a.click();
-      downloadButton.innerHTML = "Download complete.";
+      downloadButton.innerHTML = "Download complete";
     }
   } catch (error) {
     console.error("Error downloading results:", error);
-    downloadButton.innerHTML = "Download failed.";
-    results.innerHTML = "Error downloading results.";
+    downloadButton.innerHTML = "Download failed";
+    results.innerHTML = "Error downloading results";
   } finally {
     downloadButton.disabled = false;
   }

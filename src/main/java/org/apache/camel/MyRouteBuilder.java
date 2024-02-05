@@ -5,7 +5,6 @@ import org.apache.camel.aggregationStrategies.GenderAggregationStrategy;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.cache.SimpleCache;
 import org.apache.camel.model.dataformat.JsonLibrary;
-import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.util.UniqueIdentifierGenerator;
 
 import java.time.LocalDate;
@@ -253,9 +252,9 @@ public class MyRouteBuilder extends RouteBuilder {
                     }
                     exchange.getIn().setBody(players);
                 })
-                .marshal().json(JsonLibrary.Jackson, true)
-                .to("file:data/output?fileName=players.json&fileExist=Override")
-                .log("Players downloaded, filtered, sorted and saved to file.");
+                .marshal()
+                .json(JsonLibrary.Jackson, true)
+                .to("file:data/output?fileName=players.json&fileExist=Override");
 
         from("direct:searchPlayerById")
                 .process(exchange -> {
@@ -277,7 +276,8 @@ public class MyRouteBuilder extends RouteBuilder {
                 .setHeader("Accept-Encoding", constant("deflate"))
                 .setHeader(Exchange.HTTP_QUERY, simple("no_cache=${header.NoCache}"))
                 .toD(URI + "/${header.id}")
-                .unmarshal().json(JsonLibrary.Jackson)
+                .unmarshal()
+                .json(JsonLibrary.Jackson)
                 .bean(Player.class, "extractPlayer")
                 .process(exchange -> {
                     Player player = exchange.getIn().getBody(Player.class);
@@ -290,7 +290,8 @@ public class MyRouteBuilder extends RouteBuilder {
                     SimpleCache.put(cacheKey, enrichedPlayer);
                 })
                 .end()
-                .marshal().json(JsonLibrary.Jackson);
+                .marshal()
+                .json(JsonLibrary.Jackson);
 
         from("direct:calculateAge")
                 .process(exchange -> {
@@ -314,15 +315,16 @@ public class MyRouteBuilder extends RouteBuilder {
         from("direct:countPlayersByGender")
                 .process(exchange -> {
                     String cacheKey = "allPlayers";
-                    List<Player> players = (List<Player>) SimpleCache.get(cacheKey);
-                    for (Player player : players) {
-                        Exchange playerExchange = new DefaultExchange(getContext());
-                        playerExchange.getIn().setBody(player, Player.class);
-                        exchange.getContext().createProducerTemplate()
-                                .send("direct:aggregateGender", playerExchange);
-                    }
+                    List<Player> cachedData = (List<Player>) SimpleCache.get(cacheKey);
+                    exchange.getIn().setBody(cachedData);
                 })
-                .end();
+                .split(body())
+                .filter(exchange -> {
+                    Player player = exchange.getIn().getBody(Player.class);
+                    return player.isGenderFM();
+                })
+                .resequence().body()
+                .to("direct:aggregateGender");
 
         from("direct:aggregateGender")
                 .aggregate(new GenderAggregationStrategy()).constant(true)
@@ -332,14 +334,11 @@ public class MyRouteBuilder extends RouteBuilder {
                     Map<String, Integer> aggregatedGenderCount = exchange.getIn().getBody(Map.class);
                     exchange.getIn().setBody(aggregatedGenderCount);
                 })
-                .marshal().json(JsonLibrary.Jackson)
-                .to("direct:saveToFile")
-                .end()
-                .log("Aggregation complete. Player counts by gender processed.");
-
-        from("direct:saveToFile")
+                .marshal()
+                .json(JsonLibrary.Jackson)
                 .to("file:data/output?fileName=playerCountsByGender.json&fileExist=Override")
-                .log("Player counts by gender saved to file.");
+                .end();
+
     }
 
     private Map<String, String> parseQueryString(String queryString) {

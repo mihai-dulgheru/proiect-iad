@@ -115,6 +115,10 @@ public class Player {
         return filteredPlayers;
     }
 
+    public boolean isGenderFM() {
+        return "F".equalsIgnoreCase(this.gender) || "M".equalsIgnoreCase(this.gender);
+    }
+
     public String get_id() {
         return _id;
     }
